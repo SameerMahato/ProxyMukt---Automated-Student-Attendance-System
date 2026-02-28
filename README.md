@@ -151,7 +151,7 @@ VITE_API_URL=http://localhost:5000/api
 After seeding the database:
 
 **Owner/Admin:**
-- Email: `sameer@college.edu`
+- Email: `sameermahato793@gmail.com`
 - Password: `sameer@2025`
 - Role: ADMIN
 
@@ -270,7 +270,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 👨‍💻 Developer
 
 **Sameer Mahato**
-- Email: sameer@college.edu
+- Email: sameermahato793@gmail.com
 - Phone: +91-XXXXXXXXXX
 
 ## 🙏 Acknowledgments
@@ -283,7 +283,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 For issues and questions:
 - Create an issue on GitHub
-- Email: sameer@college.edu
+- Email: sameermahato793@gmail.com
 
 ---
 
