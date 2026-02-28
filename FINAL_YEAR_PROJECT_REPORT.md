@@ -815,7 +815,7 @@ This report continues with the following sections (available in full document):
 
 ## 📞 PROJECT INFORMATION
 
-**GitHub Repository:** https://github.com/Sumant3086/Smart-Hybrid-Attendance-System
+**GitHub Repository:** https://github.com/SameerMahato/ProxyMukt---Automated-Student-Attendance-System
 
 **Technology Stack:**
 - Frontend: React 18, Vite, TailwindCSS, Framer Motion

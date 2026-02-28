@@ -885,7 +885,7 @@ The solution supports institutional digital transformation goals, enhances acade
 - **Integration:** Zoom API
 
 ### D. Project Repository
-**GitHub:** https://github.com/Sumant3086/Smart-Hybrid-Attendance-System
+**GitHub:** https://github.com/SameerMahato/ProxyMukt---Automated-Student-Attendance-System
 
 ---
 

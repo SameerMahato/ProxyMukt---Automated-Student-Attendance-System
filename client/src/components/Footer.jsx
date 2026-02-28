@@ -16,10 +16,10 @@ export default function Footer() {
             Developed by <span className="text-indigo-600 dark:text-indigo-400 font-semibold">Sameer Mahato</span>
           </span>
         </div>
-        
+
         <div className="flex items-center space-x-6">
           <a
-            href="https://github.com/Sumant3086"
+            href="https://github.com/SameerMahato"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center space-x-1 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
