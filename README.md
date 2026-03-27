@@ -148,20 +148,22 @@ VITE_API_URL=http://localhost:5000/api
 
 ## 👤 Default Credentials
 
-After seeding the database:
+After running `node seed.js`:
 
 **Owner/Admin:**
-- Email: `sameermahato793@gmail.com`
-- Password: `sameer@2025`
+- Email: `admin@example.com` *(set via `ADMIN_EMAIL` in `.env`)*
+- Password: *(set via `ADMIN_PASSWORD` in `.env`)*
 - Role: ADMIN
 
 **Faculty:**
 - Email: `faculty@example.com`
 - Password: `faculty123`
 
-**Student:**
-- Email: `student@example.com`
-- Password: `student123`
+**Students:**
+- Email: `student@example.com` / Password: `student123`
+- Email: `alice@example.com` / Password: `student123`
+- Email: `bob@example.com` / Password: `student123`
+- Email: `charlie@example.com` / Password: `student123`
 
 ## 📚 Key Features
 
