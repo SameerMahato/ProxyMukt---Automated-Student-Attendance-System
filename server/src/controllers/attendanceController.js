@@ -283,6 +283,20 @@ export const markAttendance = async (req, res) => {
     session.attendanceCount += 1;
     await session.save();
     
+    // Emit socket event for real-time attendance update
+    if (req.app.get('io')) {
+      req.app.get('io').to(`session-${session._id}`).emit('attendance-marked', {
+        _id: attendance._id,
+        student: {
+          _id: req.user._id,
+          name: req.user.name,
+          email: req.user.email
+        },
+        markedAt: attendance.createdAt,
+        status: 'PRESENT'
+      });
+    }
+    
     res.status(201).json({
       success: true,
       message: 'Attendance marked successfully',

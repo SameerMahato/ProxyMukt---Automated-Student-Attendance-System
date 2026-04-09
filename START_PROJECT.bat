@@ -1,36 +1,49 @@
 @echo off
 echo ========================================
-echo Starting Attendance System
+echo ProxyMukt Attendance System
+echo Starting Development Servers
 echo ========================================
 echo.
 
+REM Check if Node.js is installed
+where node >nul 2>nul
+if %ERRORLEVEL% NEQ 0 (
+    echo ERROR: Node.js is not installed!
+    echo Please install Node.js from https://nodejs.org/
+    pause
+    exit /b 1
+)
+
+echo Node.js version:
+node --version
+echo.
+
+REM Check if MongoDB is running
+echo Checking MongoDB connection...
+timeout /t 2 /nobreak >nul
+
+REM Start Backend Server
+echo ========================================
 echo Starting Backend Server...
-start "Backend Server" cmd /k "cd server && npm run dev"
-timeout /t 3 /nobreak > nul
+echo ========================================
+start "ProxyMukt Backend" cmd /k "cd server && npm run dev"
 
+REM Wait a bit for backend to start
+timeout /t 5 /nobreak >nul
+
+REM Start Frontend Server
+echo ========================================
 echo Starting Frontend Server...
-start "Frontend Server" cmd /k "cd client && npm run dev"
-timeout /t 2 /nobreak > nul
+echo ========================================
+start "ProxyMukt Frontend" cmd /k "cd client && npm run dev"
 
 echo.
 echo ========================================
-echo Servers Starting...
+echo Both servers are starting!
 echo ========================================
 echo.
 echo Backend:  http://localhost:5000
 echo Frontend: http://localhost:5173
 echo.
-echo Opening browser...
-timeout /t 5 /nobreak > nul
-start http://localhost:5173
-echo.
-echo ========================================
-echo Login Credentials:
-echo ========================================
-echo Admin:   admin@example.com / admin123
-echo Faculty: faculty@example.com / faculty123
-echo Student: alice@example.com / student123
-echo ========================================
-echo.
-echo Press any key to exit this window...
-pause > nul
+echo Press any key to close this window...
+pause >nul

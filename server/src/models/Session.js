@@ -52,6 +52,32 @@ const sessionSchema = new mongoose.Schema(
         default: false,
       },
     },
+    verificationSettings: {
+      requireGeofencing: {
+        type: Boolean,
+        default: true,
+      },
+      requireFaceLiveness: {
+        type: Boolean,
+        default: false,
+      },
+      requireDeviceCheck: {
+        type: Boolean,
+        default: true,
+      },
+      requireProxyCheck: {
+        type: Boolean,
+        default: true,
+      },
+    },
+    qrEnabled: {
+      type: Boolean,
+      default: true,
+    },
+    isPaused: {
+      type: Boolean,
+      default: false,
+    },
     attendanceCount: {
       type: Number,
       default: 0,

@@ -76,6 +76,9 @@ app.use(errorHandler);
 // Socket.IO for real-time QR updates
 const activeSessions = new Map();
 
+// Make io available to controllers
+app.set('io', io);
+
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
   
@@ -113,6 +116,9 @@ io.on('connection', (socket) => {
     console.log('Client disconnected:', socket.id);
   });
 });
+
+// Export io for use in controllers
+export { io };
 
 const PORT = process.env.PORT || 5000;
 

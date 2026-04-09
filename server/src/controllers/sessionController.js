@@ -269,3 +269,128 @@ export const getSessionAttendance = async (req, res) => {
     });
   }
 };
+
+/**
+ * Toggle QR code for session
+ */
+export const toggleQR = async (req, res) => {
+  try {
+    const session = await Session.findById(req.params.id);
+    
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        message: 'Session not found',
+      });
+    }
+    
+    if (session.status !== 'LIVE') {
+      return res.status(400).json({
+        success: false,
+        message: 'Can only toggle QR for live sessions',
+      });
+    }
+    
+    session.qrEnabled = !session.qrEnabled;
+    await session.save();
+    
+    res.json({
+      success: true,
+      message: `QR code ${session.qrEnabled ? 'enabled' : 'disabled'}`,
+      data: { qrEnabled: session.qrEnabled },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+/**
+ * Pause/Resume session
+ */
+export const togglePause = async (req, res) => {
+  try {
+    const session = await Session.findById(req.params.id);
+    
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        message: 'Session not found',
+      });
+    }
+    
+    if (session.status !== 'LIVE') {
+      return res.status(400).json({
+        success: false,
+        message: 'Can only pause/resume live sessions',
+      });
+    }
+    
+    session.isPaused = !session.isPaused;
+    await session.save();
+    
+    res.json({
+      success: true,
+      message: `Session ${session.isPaused ? 'paused' : 'resumed'}`,
+      data: { isPaused: session.isPaused },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+/**
+ * Update verification settings
+ */
+export const updateVerificationSettings = async (req, res) => {
+  try {
+    const session = await Session.findById(req.params.id);
+    
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        message: 'Session not found',
+      });
+    }
+    
+    const { requireGeofencing, requireFaceLiveness, requireDeviceCheck, requireProxyCheck } = req.body;
+    
+    if (requireGeofencing !== undefined) {
+      session.verificationSettings.requireGeofencing = requireGeofencing;
+    }
+    if (requireFaceLiveness !== undefined) {
+      session.verificationSettings.requireFaceLiveness = requireFaceLiveness;
+    }
+    if (requireDeviceCheck !== undefined) {
+      session.verificationSettings.requireDeviceCheck = requireDeviceCheck;
+    }
+    if (requireProxyCheck !== undefined) {
+      session.verificationSettings.requireProxyCheck = requireProxyCheck;
+    }
+    
+    await session.save();
+    
+    // Emit socket event for real-time update
+    if (req.app.get('io')) {
+      req.app.get('io').to(`session-${req.params.id}`).emit('verification-settings-updated', {
+        verificationSettings: session.verificationSettings
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Verification settings updated',
+      data: { verificationSettings: session.verificationSettings },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
