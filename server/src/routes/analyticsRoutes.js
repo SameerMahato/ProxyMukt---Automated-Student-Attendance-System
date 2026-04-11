@@ -4,6 +4,7 @@ import {
   getStudentAnalytics,
   exportAttendanceCSV,
   getClassAnalytics,
+  getLeaderboard
 } from '../controllers/analyticsController.js';
 import { authenticate } from '../middleware/auth.js';
 import { authorize } from '../middleware/role.js';
@@ -20,5 +21,6 @@ router.get('/export/csv', authorize('ADMIN', 'FACULTY'), exportAttendanceCSV);
 // Student analytics
 router.get('/student', getStudentAnalytics);
 router.get('/student/:studentId', authorize('ADMIN', 'FACULTY'), getStudentAnalytics);
+router.get('/leaderboard', getLeaderboard);
 
 export default router;

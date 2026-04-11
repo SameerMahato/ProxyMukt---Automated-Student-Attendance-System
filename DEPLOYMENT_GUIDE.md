@@ -642,9 +642,9 @@ pm2 start server.js --max-memory-restart 500M
 ## 📞 Support
 
 For deployment issues:
-- 📧 Email: sumantyadav3086@gmail.com
-- 🐛 Issues: [GitHub Issues](https://github.com/Sumant3086/ProxyMukt-Attendance-System-/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/Sumant3086/ProxyMukt-Attendance-System-/discussions)
+- 📧 Email: sameermahato793@gmail.com
+- 🐛 Issues: [GitHub Issues](https://github.com/SameerMahato/ProxyMukt---Automated-Student-Attendance-System/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/SameerMahato/ProxyMukt---Automated-Student-Attendance-System/discussions)
 
 ---
 

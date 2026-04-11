@@ -34,8 +34,8 @@ Before you begin, ensure you have the following installed:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/ProxyMukt-Attendance-System.git
-   cd ProxyMukt-Attendance-System
+   git clone https://github.com/SameerMahato/ProxyMukt---Automated-Student-Attendance-System.git
+   cd ProxyMukt---Automated-Student-Attendance-System
    ```
 
 2. **Install dependencies**
@@ -89,8 +89,8 @@ Before you begin, ensure you have the following installed:
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ProxyMukt-Attendance-System.git
-cd ProxyMukt-Attendance-System
+git clone https://github.com/SameerMahato/ProxyMukt---Automated-Student-Attendance-System.git
+cd ProxyMukt---Automated-Student-Attendance-System
 ```
 
 ### Step 2: Backend Setup
@@ -447,8 +447,8 @@ git push heroku main
 - Deployment Guide: [Coming Soon]
 
 ### Community
-- GitHub Issues: [Report Bugs](https://github.com/YOUR_USERNAME/ProxyMukt-Attendance-System/issues)
-- GitHub Discussions: [Ask Questions](https://github.com/YOUR_USERNAME/ProxyMukt-Attendance-System/discussions)
+- GitHub Issues: [Report Bugs](https://github.com/SameerMahato/ProxyMukt---Automated-Student-Attendance-System/issues)
+- GitHub Discussions: [Ask Questions](https://github.com/SameerMahato/ProxyMukt---Automated-Student-Attendance-System/discussions)
 
 ---
 
@@ -465,8 +465,8 @@ If you encounter any issues:
    - Steps to reproduce
 
 ### Contact
-- 📧 Email: sumantyadav3086@gmail.com
-- 💬 GitHub: [@Sumant3086](https://github.com/Sumant3086)
+- 📧 Email: sameermahato793@gmail.com
+- 💬 GitHub: [@SameerMahato](https://github.com/SameerMahato)
 
 ---
 

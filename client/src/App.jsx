@@ -15,6 +15,19 @@ import StudentAnalytics from './pages/StudentAnalytics';
 import AuditLogs from './pages/AuditLogs';
 import OnlineSession from './pages/OnlineSession';
 import OnlineSessionMonitor from './pages/OnlineSessionMonitor';
+import StudentPerformance from './pages/StudentPerformance';
+import StudentGoals from './pages/StudentGoals';
+import StudentLeave from './pages/StudentLeave';
+import StudentTimetable from './pages/StudentTimetable';
+import StudentLeaderboard from './pages/StudentLeaderboard';
+import StudentQRHistory from './pages/StudentQRHistory';
+import StudentSessions from './pages/StudentSessions';
+import StudentAnnouncements from './pages/StudentAnnouncements';
+import StudentNotifications from './pages/StudentNotifications';
+import StudentSettings from './pages/StudentSettings';
+import FacultyLeaveManager from './pages/FacultyLeaveManager';
+import FacultyAnnouncementManager from './pages/FacultyAnnouncementManager';
+import AdminTimetableManager from './pages/AdminTimetableManager';
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { user, isAuthenticated } = useAuthStore();
@@ -138,6 +151,96 @@ function App() {
         />
         
         <Route
+          path="/student/performance"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentPerformance />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/student/goals"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentGoals />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/student/leave"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentLeave />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/student/timetable"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentTimetable />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/student/leaderboard"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentLeaderboard />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/student/qr-history"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentQRHistory />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/student/sessions"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentSessions />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/student/announcements"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentAnnouncements />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/student/notifications"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentNotifications />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/student/settings"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentSettings />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
           path="/audit-logs"
           element={
             <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -160,6 +263,48 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['FACULTY', 'ADMIN']}>
               <OnlineSessionMonitor />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Management Routes */}
+        <Route
+          path="/faculty/leaves"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY', 'ADMIN']}>
+              <FacultyLeaveManager />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/leaves"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <FacultyLeaveManager />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faculty/announcements"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY', 'ADMIN']}>
+              <FacultyAnnouncementManager />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/announcements"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <FacultyAnnouncementManager />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/timetable"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminTimetableManager />
             </ProtectedRoute>
           }
         />

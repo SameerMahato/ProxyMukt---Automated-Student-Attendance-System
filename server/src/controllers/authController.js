@@ -268,3 +268,68 @@ export const getProfile = async (req, res) => {
     });
   }
 };
+
+/**
+ * Update user profile
+ */
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, department } = req.body;
+    
+    const user = await User.findById(req.user._id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+    
+    if (name) user.name = name;
+    if (department) user.department = department;
+    
+    await user.save();
+    
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: { user },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+/**
+ * Update user password
+ */
+export const updatePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    const user = await User.findById(req.user._id).select('+password');
+    
+    if (!user || !(await user.comparePassword(currentPassword))) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid current password',
+      });
+    }
+    
+    user.password = newPassword;
+    await user.save();
+    
+    res.json({
+      success: true,
+      message: 'Password updated successfully',
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

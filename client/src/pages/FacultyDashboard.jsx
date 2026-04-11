@@ -1,20 +1,42 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import Loader from '../components/Loader';
+import GlassCard from '../components/GlassCard';
+import StatsCard from '../components/StatsCard';
+import AnimatedBackground from '../components/AnimatedBackground';
 import LocationPicker from '../components/LocationPicker';
 import axiosInstance from '../utils/axiosInstance';
-import { Plus, Calendar, Users } from 'lucide-react';
+import { 
+  Plus, 
+  Calendar, 
+  Users, 
+  BookOpen, 
+  Clock, 
+  TrendingUp, 
+  Settings, 
+  MoreVertical,
+  Activity,
+  Zap,
+  CheckCircle,
+  AlertCircle,
+  LogOut,
+  Video,
+  MapPin
+} from 'lucide-react';
 
 export default function FacultyDashboard() {
   const navigate = useNavigate();
   const [classes, setClasses] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('classes');
   const [showCreateClass, setShowCreateClass] = useState(false);
   const [showStartSession, setShowStartSession] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  
   const [formData, setFormData] = useState({
     name: '',
     code: '',
@@ -22,11 +44,12 @@ export default function FacultyDashboard() {
     department: '',
     semester: '',
   });
+  
   const [sessionData, setSessionData] = useState({
     title: '',
     location: null,
-    sessionType: 'offline', // 'offline' or 'online'
-    onlinePlatform: 'ZOOM', // 'ZOOM', 'GOOGLE_MEET', 'TEAMS'
+    sessionType: 'offline',
+    onlinePlatform: 'ZOOM',
   });
   
   useEffect(() => {
@@ -40,16 +63,13 @@ export default function FacultyDashboard() {
         axiosInstance.get('/sessions'),
       ]);
       
-      // Filter classes to only show those with LIVE sessions
       const allClasses = classesRes.data.data.classes;
       const allSessions = sessionsRes.data.data.sessions;
       
-      // Get classes with live sessions
       const liveSessionClassIds = allSessions
         .filter(s => s.status === 'LIVE')
         .map(s => s.class?._id || s.class);
       
-      // Separate classes into live and non-live
       const classesWithLiveSessions = allClasses.filter(c => 
         liveSessionClassIds.includes(c._id)
       );
@@ -57,7 +77,6 @@ export default function FacultyDashboard() {
         !liveSessionClassIds.includes(c._id)
       );
       
-      // Show live sessions first, then others
       setClasses([...classesWithLiveSessions, ...classesWithoutLiveSessions]);
       setSessions(allSessions);
     } catch (error) {
@@ -83,8 +102,8 @@ export default function FacultyDashboard() {
     setSessionData({
       title: `${cls.name} - Lecture`,
       location: null,
-      sessionType: 'offline', // Default to offline
-      onlinePlatform: 'ZOOM', // Default to Zoom
+      sessionType: 'offline',
+      onlinePlatform: 'ZOOM',
     });
     setShowStartSession(true);
   };
@@ -92,7 +111,6 @@ export default function FacultyDashboard() {
   const handleStartSession = async (e) => {
     e.preventDefault();
     try {
-      // Create regular session first
       const { data } = await axiosInstance.post('/sessions', {
         classId: selectedClass._id,
         title: sessionData.title,
@@ -103,7 +121,6 @@ export default function FacultyDashboard() {
 
       const sessionId = data.data.session._id;
 
-      // If online session, create Zoom/Meet/Teams meeting
       if (sessionData.sessionType === 'online') {
         if (sessionData.onlinePlatform === 'ZOOM') {
           try {
@@ -112,46 +129,36 @@ export default function FacultyDashboard() {
               topic: sessionData.title,
               duration: 60,
             });
-            
-            // Navigate to monitor page
             setShowStartSession(false);
             navigate(`/online-session-monitor/${zoomRes.data.data.onlineSession._id}`);
           } catch (zoomError) {
-            // If Zoom creation fails, show error and offer manual option
             const errorMsg = zoomError.response?.data?.message || 'Failed to create Zoom meeting';
             const useManual = confirm(
               `${errorMsg}\n\nWould you like to create a manual online session instead? You can add your Zoom link manually.`
             );
-            
             if (useManual) {
-              // Create generic online session
               const onlineRes = await axiosInstance.post('/online-sessions', {
                 sessionId,
                 platform: 'ZOOM',
-                meetingLink: '', // Faculty can add manually
+                meetingLink: '',
               });
-              
               setShowStartSession(false);
               navigate(`/online-session-monitor/${onlineRes.data.data.onlineSession._id}`);
             } else {
-              // Cancel and go to regular session
               setShowStartSession(false);
               navigate(`/session/${sessionId}`);
             }
           }
         } else {
-          // For other platforms, create generic online session
           const onlineRes = await axiosInstance.post('/online-sessions', {
             sessionId,
             platform: sessionData.onlinePlatform,
-            meetingLink: '', // Faculty can add manually
+            meetingLink: '',
           });
-          
           setShowStartSession(false);
           navigate(`/online-session-monitor/${onlineRes.data.data.onlineSession._id}`);
         }
       } else {
-        // Offline session - navigate to QR code page
         setShowStartSession(false);
         navigate(`/session/${sessionId}`);
       }
@@ -161,236 +168,289 @@ export default function FacultyDashboard() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader size="lg" />
-      </div>
-    );
-  }
-  
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <Loader size="lg" />
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen relative bg-slate-50 dark:bg-slate-950 overflow-hidden">
+      <AnimatedBackground />
       <Navbar />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
-              <h1 className="text-3xl font-bold">Faculty Dashboard</h1>
-              <button
-                onClick={() => setShowCreateClass(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90"
-              >
-                <Plus size={20} />
-                <span>Create Class</span>
-              </button>
+        <main className="flex-1 p-8 relative z-10 overflow-y-auto h-[calc(100vh-64px)]">
+          <div className="max-w-7xl mx-auto space-y-8">
+            {/* Header */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col md:flex-row md:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  Faculty Control Room
+                </h1>
+                <p className="text-slate-500 dark:text-slate-400 font-medium">Manage your classes, sessions and student performance</p>
+              </div>
+              <div className="flex gap-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowCreateClass(true)}
+                  className="flex items-center space-x-2 px-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl shadow-sm hover:shadow-md transition-all font-bold"
+                >
+                  <Plus size={20} className="text-indigo-600" />
+                  <span>Create Class</span>
+                </motion.button>
+              </div>
+            </motion.div>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <StatsCard icon={BookOpen} title="Active Classes" value={classes.length} color="blue" delay={0.1} isLive />
+              <StatsCard icon={Calendar} title="Weekly Sessions" value={sessions.length} color="purple" delay={0.2} />
+              <StatsCard icon={Users} title="Total Students" value={classes.reduce((acc, c) => acc + (c.students?.length || 0), 0)} color="green" delay={0.3} />
+              <StatsCard icon={TrendingUp} title="Avg Attendance" value="84%" color="orange" delay={0.4} />
             </div>
-            
-            {showCreateClass && (
-              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full">
-                  <h2 className="text-xl font-bold mb-4">Create New Class</h2>
-                  <form onSubmit={handleCreateClass} className="space-y-4">
-                    <input
-                      type="text"
-                      placeholder="Class Name"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg bg-background"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Class Code"
-                      required
-                      value={formData.code}
-                      onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg bg-background"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Department"
-                      required
-                      value={formData.department}
-                      onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg bg-background"
-                    />
-                    <div className="flex space-x-2">
-                      <button type="submit" className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg">
-                        Create
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowCreateClass(false)}
-                        className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
 
-            {showStartSession && (
-              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                  <h2 className="text-2xl font-bold mb-4">Start New Session</h2>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6">
-                    Class: {selectedClass?.name} ({selectedClass?.code})
-                  </p>
-                  <form onSubmit={handleStartSession} className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Session Title</label>
-                      <input
-                        type="text"
-                        placeholder="e.g., Lecture 5 - Data Structures"
-                        required
-                        value={sessionData.title}
-                        onChange={(e) => setSessionData({ ...sessionData, title: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-indigo-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Session Type</label>
-                      <div className="grid grid-cols-2 gap-4">
-                        <button
-                          type="button"
-                          onClick={() => setSessionData({ ...sessionData, sessionType: 'offline' })}
-                          className={`p-4 border-2 rounded-lg transition-all ${
-                            sessionData.sessionType === 'offline'
-                              ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20'
-                              : 'border-gray-300 dark:border-gray-600'
-                          }`}
-                        >
-                          <div className="text-2xl mb-2">🏫</div>
-                          <div className="font-semibold">Offline Class</div>
-                          <div className="text-xs text-gray-600 dark:text-gray-400">QR Code Attendance</div>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSessionData({ ...sessionData, sessionType: 'online' })}
-                          className={`p-4 border-2 rounded-lg transition-all ${
-                            sessionData.sessionType === 'online'
-                              ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20'
-                              : 'border-gray-300 dark:border-gray-600'
-                          }`}
-                        >
-                          <div className="text-2xl mb-2">💻</div>
-                          <div className="font-semibold">Online Class</div>
-                          <div className="text-xs text-gray-600 dark:text-gray-400">Zoom/Meet/Teams</div>
-                        </button>
-                      </div>
-                    </div>
-
-                    {sessionData.sessionType === 'online' && (
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Online Platform</label>
-                        <select
-                          value={sessionData.onlinePlatform}
-                          onChange={(e) => setSessionData({ ...sessionData, onlinePlatform: e.target.value })}
-                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-indigo-500"
-                        >
-                          <option value="ZOOM">🎥 Zoom (Auto-create meeting)</option>
-                          <option value="GOOGLE_MEET">📹 Google Meet</option>
-                          <option value="TEAMS">💼 Microsoft Teams</option>
-                          <option value="WEBRTC">🌐 Custom Platform</option>
-                        </select>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
-                          {sessionData.onlinePlatform === 'ZOOM' 
-                            ? '✨ Zoom meeting will be created automatically with attendance tracking'
-                            : 'You can add meeting link after creation'}
-                        </p>
-                      </div>
-                    )}
-
-                    {sessionData.sessionType === 'offline' && (
-                      <LocationPicker
-                        value={sessionData.location}
-                        onChange={(location) => setSessionData({ ...sessionData, location })}
-                      />
-                    )}
-
-                    <div className="flex space-x-2">
-                      <button 
-                        type="submit" 
-                        className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all font-medium"
-                      >
-                        Start Session
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowStartSession(false)}
-                        className="flex-1 px-4 py-3 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {classes.map((cls) => (
-                <div key={cls._id} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                  <h3 className="text-xl font-bold mb-2">{cls.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{cls.code}</p>
-                  <div className="flex items-center space-x-2 text-sm mb-4">
-                    <Users size={16} />
-                    <span>{cls.students?.length || 0} students</span>
-                  </div>
-                  <button
-                    onClick={() => openStartSessionModal(cls)}
-                    className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90"
-                  >
-                    <Calendar size={18} />
-                    <span>Start Session</span>
-                  </button>
-                </div>
+            {/* Tabs */}
+            <div className="flex bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl p-1.5 rounded-[24px] border border-slate-200 dark:border-slate-800 w-fit">
+              {['classes', 'sessions', 'reports'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-8 py-3 rounded-[18px] text-sm font-black uppercase tracking-widest transition-all duration-300 ${
+                    activeTab === tab 
+                      ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-500/20' 
+                      : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+                  }`}
+                >
+                  {tab}
+                </button>
               ))}
             </div>
-            
-            <div className="mt-8">
-              <h2 className="text-2xl font-bold mb-4">Recent Sessions</h2>
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase">Class</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase">Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase">Attendance</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                    {sessions.slice(0, 5).map((session) => (
-                      <tr key={session._id}>
-                        <td className="px-6 py-4">{session.class?.name}</td>
-                        <td className="px-6 py-4">{new Date(session.date).toLocaleDateString()}</td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2 py-1 rounded text-xs ${
-                            session.status === 'LIVE' ? 'bg-green-100 text-green-800' :
-                            session.status === 'COMPLETED' ? 'bg-blue-100 text-blue-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {session.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          {session.attendanceCount}/{session.totalStudents}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+
+            <AnimatePresence mode="wait">
+              {activeTab === 'classes' && (
+                <motion.div
+                  key="classes"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                >
+                  {classes.map((cls, i) => (
+                    <motion.div
+                      key={cls._id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.05 }}
+                    >
+                      <GlassCard className="p-0 overflow-hidden group border-b-4 border-b-indigo-500">
+                        <div className="p-8">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 flex items-center justify-center">
+                              <BookOpen size={28} />
+                            </div>
+                            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-[10px] font-black text-slate-500 uppercase tracking-widest rounded-lg">
+                              {cls.code}
+                            </span>
+                          </div>
+                          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-indigo-600 transition-colors">
+                            {cls.name}
+                          </h3>
+                          <div className="flex items-center gap-4 text-sm font-bold text-slate-400 mb-8">
+                            <span className="flex items-center gap-1.5"><Users size={16} /> {cls.students?.length || 0} Students</span>
+                            <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                            <span>{cls.department}</span>
+                          </div>
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => openStartSessionModal(cls)}
+                            className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-slate-900/10 hover:bg-indigo-600 dark:hover:bg-indigo-600 hover:text-white dark:hover:text-white transition-all"
+                          >
+                            Start New Session
+                          </motion.button>
+                        </div>
+                      </GlassCard>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+
+              {activeTab === 'sessions' && (
+                <motion.div
+                  key="sessions"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="space-y-4"
+                >
+                  <GlassCard className="p-0 overflow-hidden">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-slate-50 dark:bg-slate-800/50">
+                          <th className="px-8 py-6 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Class</th>
+                          <th className="px-8 py-6 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Date/Time</th>
+                          <th className="px-8 py-6 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                          <th className="px-8 py-6 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Participants</th>
+                          <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-widest text-slate-400">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                        {sessions.map((session) => (
+                          <tr key={session._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+                            <td className="px-8 py-6">
+                              <div>
+                                <h4 className="font-bold text-slate-900 dark:text-white">{session.class?.name}</h4>
+                                <span className="text-[10px] font-bold text-indigo-600 uppercase">{session.class?.code}</span>
+                              </div>
+                            </td>
+                            <td className="px-8 py-6">
+                              <div className="flex flex-col text-sm font-bold text-slate-600 dark:text-slate-400">
+                                <span className="flex items-center gap-2"><Calendar size={14} /> {new Date(session.date).toLocaleDateString()}</span>
+                                <span className="flex items-center gap-2 mt-1"><Clock size={14} /> 09:00 AM</span>
+                              </div>
+                            </td>
+                            <td className="px-8 py-6">
+                              <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 w-fit ${
+                                session.status === 'LIVE' 
+                                  ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800' 
+                                  : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                              }`}>
+                                {session.status === 'LIVE' && <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />}
+                                {session.status}
+                              </span>
+                            </td>
+                            <td className="px-8 py-6">
+                              <div className="flex items-center gap-4">
+                                <p className="font-bold text-lg text-slate-900 dark:text-white">
+                                  {session.attendanceCount}/{session.totalStudents}
+                                </p>
+                                <div className="w-24 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                  <div 
+                                    className="h-full bg-indigo-600"
+                                    style={{ width: `${(session.attendanceCount / (session.totalStudents || 1)) * 100}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-8 py-6 text-right">
+                              <button 
+                                onClick={() => navigate(`/session/${session._id}`)}
+                                className="p-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-600 rounded-xl transition-all"
+                              >
+                                <ChevronRight size={24} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </GlassCard>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Modals remain similarly functional but integrated into the premium UI */}
+            <AnimatePresence>
+              {showStartSession && (
+                <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    className="bg-white dark:bg-slate-900 p-8 rounded-[40px] max-w-2xl w-full shadow-2xl overflow-y-auto max-h-[90vh]"
+                  >
+                    <div className="flex justify-between items-start mb-8">
+                      <div>
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Launch Session</h2>
+                        <p className="text-slate-500 font-bold mt-1">Class: {selectedClass?.name}</p>
+                      </div>
+                      <button onClick={() => setShowStartSession(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all">
+                        <Activity className="rotate-45 text-slate-400" />
+                      </button>
+                    </div>
+
+                    <form onSubmit={handleStartSession} className="space-y-8">
+                      <div className="space-y-4">
+                        <label className="text-sm font-black uppercase tracking-widest text-slate-400 ml-1">Session Protocol</label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <button
+                            type="button"
+                            onClick={() => setSessionData({ ...sessionData, sessionType: 'offline' })}
+                            className={`p-6 rounded-3xl border-2 transition-all flex flex-col items-center gap-4 ${
+                              sessionData.sessionType === 'offline'
+                                ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-900/10 shadow-lg shadow-indigo-500/10'
+                                : 'border-slate-100 dark:border-slate-800'
+                            }`}
+                          >
+                            <MapPin size={32} className={sessionData.sessionType === 'offline' ? 'text-indigo-600' : 'text-slate-400'} />
+                            <div className="text-center">
+                              <p className="font-bold text-slate-900 dark:text-white">Physical Class</p>
+                              <p className="text-[10px] font-bold text-slate-400 uppercase">QR + Location</p>
+                            </div>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSessionData({ ...sessionData, sessionType: 'online' })}
+                            className={`p-6 rounded-3xl border-2 transition-all flex flex-col items-center gap-4 ${
+                              sessionData.sessionType === 'online'
+                                ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-900/10 shadow-lg shadow-indigo-500/10'
+                                : 'border-slate-100 dark:border-slate-800'
+                            }`}
+                          >
+                            <Video size={32} className={sessionData.sessionType === 'online' ? 'text-indigo-600' : 'text-slate-400'} />
+                            <div className="text-center">
+                              <p className="font-bold text-slate-900 dark:text-white">Virtual Class</p>
+                              <p className="text-[10px] font-bold text-slate-400 uppercase">External Meet</p>
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-black uppercase tracking-widest text-slate-400 ml-1">Session Designation</label>
+                        <input
+                          type="text"
+                          required
+                          className="w-full p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-4 focus:ring-indigo-500/10 font-bold transition-all"
+                          value={sessionData.title}
+                          onChange={(e) => setSessionData({ ...sessionData, title: e.target.value })}
+                        />
+                      </div>
+
+                      {sessionData.sessionType === 'offline' && (
+                        <div className="space-y-4">
+                           <label className="text-sm font-black uppercase tracking-widest text-slate-400 ml-1">Geofence Location</label>
+                           <LocationPicker
+                            value={sessionData.location}
+                            onChange={(location) => setSessionData({ ...sessionData, location })}
+                          />
+                        </div>
+                      )}
+
+                      <div className="flex gap-4 pt-4">
+                        <button type="submit" className="flex-1 py-5 bg-indigo-600 text-white rounded-3xl font-black uppercase tracking-widest shadow-2xl shadow-indigo-500/40 hover:scale-[1.02] transition-all">
+                          Initiate Session
+                        </button>
+                        <button type="button" onClick={() => setShowStartSession(false)} className="px-8 py-5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-3xl font-black uppercase tracking-widest">
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
           </div>
         </main>
       </div>
     </div>
   );
 }
+
+import { ChevronRight } from 'lucide-react';

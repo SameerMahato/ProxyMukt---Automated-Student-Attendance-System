@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../store/authStore';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
@@ -8,16 +8,33 @@ import Loader from '../components/Loader';
 import StatsCard from '../components/StatsCard';
 import GlassCard from '../components/GlassCard';
 import AnimatedBackground from '../components/AnimatedBackground';
-import { AttendanceTrendChart } from '../components/AttendanceChart';
 import axiosInstance from '../utils/axiosInstance';
-import { QrCode, BookOpen, Calendar, BarChart3, TrendingUp, Award } from 'lucide-react';
+import { 
+  QrCode, 
+  BookOpen, 
+  Calendar, 
+  BarChart3, 
+  TrendingUp, 
+  Award, 
+  CheckCircle, 
+  Clock, 
+  Zap,
+  LayoutDashboard,
+  Bell,
+  Settings
+} from 'lucide-react';
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
   const [classes, setClasses] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalSessions: 0,
+    attendedSessions: 0,
+    percentage: 0,
+  });
   
   useEffect(() => {
     if (isAuthenticated) {
@@ -27,56 +44,27 @@ export default function StudentDashboard() {
     }
   }, [isAuthenticated]);
   
-  const [stats, setStats] = useState({
-    totalSessions: 0,
-    attendedSessions: 0,
-    percentage: 0,
-  });
-
   const fetchData = async () => {
     try {
-      const [classesRes, attendanceRes] = await Promise.all([
+      const [classesRes, attendanceRes, statsRes] = await Promise.all([
         axiosInstance.get('/classes'),
         axiosInstance.get('/attendance/my-attendance'),
+        axiosInstance.get('/analytics/student')
       ]);
       
-      const classesData = classesRes.data.data.classes || [];
-      const attendanceData = attendanceRes.data.data.attendance || [];
+      setClasses(classesRes.data.data.classes || []);
+      setAttendance(attendanceRes.data.data.attendance || []);
       
-      setClasses(classesData);
-      setAttendance(attendanceData);
-      
-      // Calculate attendance statistics
-      // Get all sessions for enrolled classes
-      let totalSessions = 0;
-      for (const cls of classesData) {
-        try {
-          const sessionsRes = await axiosInstance.get(`/sessions?classId=${cls._id}`);
-          const completedSessions = sessionsRes.data.data.sessions.filter(
-            s => s.status === 'COMPLETED' || s.status === 'LIVE'
-          );
-          totalSessions += completedSessions.length;
-        } catch (error) {
-          console.error('Error fetching sessions:', error);
-        }
+      if (statsRes.data.success) {
+        setStats({
+          totalSessions: statsRes.data.data.overall.totalSessions,
+          attendedSessions: statsRes.data.data.overall.totalAttended,
+          percentage: statsRes.data.data.overall.percentage,
+        });
       }
-      
-      const attendedSessions = attendanceData.length;
-      const percentage = totalSessions > 0 
-        ? Math.round((attendedSessions / totalSessions) * 100)
-        : 0;
-      
-      setStats({
-        totalSessions,
-        attendedSessions,
-        percentage,
-      });
     } catch (error) {
       console.error('Error fetching data:', error);
-      // If unauthorized, redirect to login
-      if (error.response?.status === 401) {
-        navigate('/login');
-      }
+      if (error.response?.status === 401) navigate('/login');
     } finally {
       setLoading(false);
     }
@@ -91,96 +79,114 @@ export default function StudentDashboard() {
   }
   
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative bg-slate-50 dark:bg-slate-950 overflow-hidden">
       <AnimatedBackground />
       <Navbar />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 p-8 relative z-10">
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 p-8 relative z-10 overflow-y-auto h-[calc(100vh-64px)]">
+          <div className="max-w-7xl mx-auto space-y-8">
+            {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex justify-between items-center mb-8"
+              className="flex justify-between items-center"
             >
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                   Student Dashboard
                 </h1>
-                <p className="text-slate-600 dark:text-slate-400 mt-2">Welcome back! Track your attendance</p>
+                <p className="text-slate-500 dark:text-slate-400 font-medium">
+                  Welcome back, <span className="text-indigo-600 dark:text-indigo-400">{user?.name}</span>! Track your attendance
+                </p>
               </div>
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/scan')}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl hover:shadow-lg transition-all duration-300"
+                className="flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-2xl shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all duration-300"
               >
                 <QrCode size={20} />
-                <span className="font-semibold">Scan QR</span>
+                <span className="font-bold">Scan QR</span>
               </motion.button>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <StatsCard
                 icon={BookOpen}
                 title="Enrolled Classes"
                 value={classes.length}
-                subtitle="Active courses"
+                subtitle="4 active courses"
                 color="blue"
                 delay={0}
-                trend={5}
+                isLive
               />
               
               <StatsCard
                 icon={Calendar}
-                title="Total Attendance"
-                value={attendance.length}
-                subtitle="Sessions attended"
+                title="Sessions Attended"
+                value={stats.attendedSessions}
+                subtitle={`out of ${stats.totalSessions} total sessions`}
                 color="green"
                 delay={0.1}
-                trend={12}
+                isLive
               />
               
               <StatsCard
                 icon={TrendingUp}
-                title="Avg Attendance"
+                title="Attendance Rate"
                 value={`${stats.percentage}%`}
-                subtitle={stats.percentage >= 75 ? 'Keep it up!' : stats.percentage >= 60 ? 'Needs improvement' : 'At risk!'}
-                color={stats.percentage >= 75 ? 'green' : stats.percentage >= 60 ? 'orange' : 'red'}
+                subtitle={stats.percentage >= 75 ? 'Above 75% - Keep it up!' : 'Below 75% - Needs attention'}
+                color={stats.percentage >= 75 ? 'green' : 'orange'}
                 delay={0.2}
-                trend={stats.percentage >= 75 ? 8 : stats.percentage >= 60 ? 0 : -5}
+                isLive
               />
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+              {/* My Classes List */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
+                className="lg:col-span-3"
               >
-                <GlassCard className="p-6">
-                  <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    My Classes
+                <GlassCard className="p-8 h-full">
+                  <h2 className="text-2xl font-bold mb-8 flex items-center justify-between">
+                    <span>My Classes</span>
+                    <Settings size={20} className="text-slate-400 cursor-pointer hover:text-indigo-500 transition-colors" />
                   </h2>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {classes.map((cls, index) => (
                       <motion.div
                         key={cls._id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 + index * 0.1 }}
-                        whileHover={{ scale: 1.02, x: 5 }}
-                        className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800 rounded-xl cursor-pointer transition-all"
+                        whileHover={{ x: 10 }}
+                        className="p-6 bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-3xl shadow-sm hover:shadow-md transition-all group cursor-pointer"
                       >
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h3 className="font-semibold text-lg">{cls.name}</h3>
-                            <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">{cls.code}</p>
-                            <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">
-                              👨‍🏫 {cls.faculty?.name}
-                            </p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center group-hover:bg-indigo-600 transition-colors">
+                              <BookOpen size={24} className="text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors" />
+                            </div>
+                            <div>
+                              <h3 className="font-bold text-lg text-slate-900 dark:text-white">{cls.name}</h3>
+                              <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">{cls.code}</p>
+                              <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                                👨‍🏫 {cls.faculty?.name || 'Faculty/'}
+                              </p>
+                            </div>
                           </div>
-                          <Award className="text-yellow-500" size={24} />
+                          <motion.div
+                            whileHover={{ rotate: 15, scale: 1.2 }}
+                            className="p-2"
+                          >
+                            <Award className="text-yellow-500" size={28} />
+                          </motion.div>
                         </div>
                       </motion.div>
                     ))}
@@ -188,43 +194,44 @@ export default function StudentDashboard() {
                 </GlassCard>
               </motion.div>
               
+              {/* Recent Attendance */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
+                className="lg:col-span-2"
               >
-                <GlassCard className="p-6">
-                  <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                    Recent Attendance
+                <GlassCard className="p-8 h-full">
+                  <h2 className="text-2xl font-bold mb-8 flex items-center justify-between">
+                    <span>Recent Attendance</span>
+                    <Clock size={20} className="text-slate-400" />
                   </h2>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {attendance.slice(0, 5).map((record, index) => (
                       <motion.div
                         key={record._id}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 + index * 0.1 }}
-                        whileHover={{ scale: 1.02 }}
-                        className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border border-green-200 dark:border-green-800 rounded-xl"
+                        transition={{ delay: 0.5 + index * 0.1 }}
+                        className="p-5 bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-2xl flex items-center justify-between"
                       >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold">{record.class?.name}</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              📅 {new Date(record.markedAt).toLocaleString()}
-                            </p>
-                          </div>
-                          <motion.span
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ delay: 0.5 + index * 0.1, type: 'spring' }}
-                            className="px-3 py-1 bg-green-500 text-white text-xs rounded-full font-semibold shadow-lg"
-                          >
-                            ✓ {record.status}
-                          </motion.span>
+                        <div className="space-y-1">
+                          <h3 className="font-bold text-slate-800 dark:text-slate-200">{record.class?.name}</h3>
+                          <p className="text-xs text-slate-500 font-medium flex items-center gap-1">
+                            📅 {new Date(record.markedAt).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="px-4 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-bold text-[10px] rounded-lg tracking-widest flex items-center gap-1">
+                          <CheckCircle size={12} />
+                          PRESENT
                         </div>
                       </motion.div>
                     ))}
+                    {attendance.length === 0 && (
+                      <div className="text-center py-12 text-slate-400 italic">
+                        No recent attendance records
+                      </div>
+                    )}
                   </div>
                 </GlassCard>
               </motion.div>

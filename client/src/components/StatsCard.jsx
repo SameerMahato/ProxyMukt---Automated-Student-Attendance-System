@@ -3,7 +3,7 @@ import GlassCard from './GlassCard';
 import CountUpAnimation from './CountUpAnimation';
 import { TrendingUp } from 'lucide-react';
 
-export default function StatsCard({ icon: Icon, title, value, subtitle, color = 'blue', delay = 0, trend }) {
+export default function StatsCard({ icon: Icon, title, value, subtitle, color = 'blue', delay = 0, trend, isLive = false }) {
   const colorClasses = {
     blue: 'from-indigo-500 to-indigo-600',      // Professional indigo
     green: 'from-green-500 to-green-600',       // Success green
@@ -53,19 +53,21 @@ export default function StatsCard({ icon: Icon, title, value, subtitle, color = 
             >
               <Icon className="text-white" size={24} />
             </motion.div>
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: delay + 0.3, type: 'spring', stiffness: 200 }}
-              className="flex items-center space-x-1 text-xs font-semibold px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
-            >
+            {isLive && (
               <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-2 h-2 bg-green-500 rounded-full"
-              />
-              <span>Live</span>
-            </motion.div>
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: delay + 0.3, type: 'spring', stiffness: 200 }}
+                className="flex items-center space-x-1 text-xs font-semibold px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="w-2 h-2 bg-green-500 rounded-full"
+                />
+                <span>Live</span>
+              </motion.div>
+            )}
           </div>
           
           <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">

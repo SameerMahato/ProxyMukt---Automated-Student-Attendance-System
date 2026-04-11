@@ -220,9 +220,9 @@ npm run dev
 ## Support
 
 For issues or questions:
-- 📧 Email: sumantyadav3086@gmail.com
-- 🐛 Issues: [GitHub Issues](https://github.com/Sumant3086/ProxyMukt-Attendance-System-/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/Sumant3086/ProxyMukt-Attendance-System-/discussions)
+- 📧 Email: sameermahato793@gmail.com
+- 🐛 Issues: [GitHub Issues](https://github.com/YourUsername/YourRepo/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/YourUsername/YourRepo/discussions)
 
 ---
 

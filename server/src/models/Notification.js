@@ -16,6 +16,8 @@ const notificationSchema = new mongoose.Schema(
         'LOW_ATTENDANCE_WARNING',
         'CLASS_CREATED',
         'CLASS_UPDATED',
+        'LEAVE_STATUS_UPDATE',
+        'NEW_ANNOUNCEMENT',
       ],
       required: true,
     },

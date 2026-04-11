@@ -3,6 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "author": "Sameer Mahato <sameermahato793@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SameerMahato/ProxyMukt---Automated-Student-Attendance-System.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,8 +16,10 @@
   "dependencies": {
     "axios": "^1.6.2",
     "clsx": "^2.0.0",
+    "face-api.js": "^0.22.2",
     "framer-motion": "^12.23.24",
-    "lucide-react": "^0.294.0",
+    "jsqr": "^1.4.0",
+    "lucide-react": "^1.8.0",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -13,6 +13,9 @@ import classRoutes from './routes/classRoutes.js';
 import sessionRoutes from './routes/sessionRoutes.js';
 import attendanceRoutes from './routes/attendanceRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import leaveRoutes from './routes/leaveRoutes.js';
+import announcementRoutes from './routes/announcementRoutes.js';
+import timetableRoutes from './routes/timetableRoutes.js';
 import { generateQRToken, getQRRotationInterval } from './utils/qr.js';
 
 dotenv.config();
@@ -68,6 +71,9 @@ app.use('/api/audit', auditRoutes);
 app.use('/api/online-sessions', onlineSessionRoutes);
 app.use('/api/zoom', zoomRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/leaves', leaveRoutes);
+app.use('/api/announcements', announcementRoutes);
+app.use('/api/timetable', timetableRoutes);
 
 // Error handlers
 app.use(notFound);
