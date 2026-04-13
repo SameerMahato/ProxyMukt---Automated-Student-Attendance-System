@@ -28,6 +28,21 @@ import StudentSettings from './pages/StudentSettings';
 import FacultyLeaveManager from './pages/FacultyLeaveManager';
 import FacultyAnnouncementManager from './pages/FacultyAnnouncementManager';
 import AdminTimetableManager from './pages/AdminTimetableManager';
+import FacultyAnalytics from './pages/FacultyAnalytics';
+import FacultyReports from './pages/FacultyReports';
+import FacultyAlerts from './pages/FacultyAlerts';
+import FacultyStudents from './pages/FacultyStudents';
+import FacultyClasses from './pages/FacultyClasses';
+import FacultySessions from './pages/FacultySessions';
+import FacultyNotifications from './pages/FacultyNotifications';
+import FacultySettings from './pages/FacultySettings';
+import AdminAnalytics from './pages/AdminAnalytics';
+import AdminReports from './pages/AdminReports';
+import AdminAlerts from './pages/AdminAlerts';
+import AdminUsers from './pages/AdminUsers';
+import AdminSessions from './pages/AdminSessions';
+import AdminSystem from './pages/AdminSystem';
+import AdminNotifications from './pages/AdminNotifications';
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { user, isAuthenticated } = useAuthStore();
@@ -267,7 +282,71 @@ function App() {
           }
         />
 
-        {/* Management Routes */}
+        {/* Faculty Routes */}
+        <Route
+          path="/faculty/analytics"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY']}>
+              <FacultyAnalytics />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faculty/reports"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY']}>
+              <FacultyReports />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faculty/alerts"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY']}>
+              <FacultyAlerts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faculty/students"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY']}>
+              <FacultyStudents />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faculty/classes"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY']}>
+              <FacultyClasses />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faculty/sessions"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY']}>
+              <FacultySessions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faculty/notifications"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY']}>
+              <FacultyNotifications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faculty/settings"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY']}>
+              <FacultySettings />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/faculty/leaves"
           element={
@@ -277,18 +356,76 @@ function App() {
           }
         />
         <Route
-          path="/admin/leaves"
-          element={
-            <ProtectedRoute allowedRoles={['ADMIN']}>
-              <FacultyLeaveManager />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/faculty/announcements"
           element={
             <ProtectedRoute allowedRoles={['FACULTY', 'ADMIN']}>
               <FacultyAnnouncementManager />
+            </ProtectedRoute>
+          }
+        />
+        
+        {/* Admin Routes */}
+        <Route
+          path="/admin/analytics"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminAnalytics />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/reports"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminReports />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/alerts"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminAlerts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminUsers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/sessions"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminSessions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/system"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminSystem />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/notifications"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminNotifications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/leaves"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <FacultyLeaveManager />
             </ProtectedRoute>
           }
         />

@@ -175,61 +175,116 @@ export default function FacultyDashboard() {
   );
 
   return (
-    <div className="min-h-screen relative bg-slate-50 dark:bg-slate-950 overflow-hidden">
-      <AnimatedBackground />
+    <div className="min-h-screen bg-[#0a0e1a]">
       <Navbar />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 p-8 relative z-10 overflow-y-auto h-[calc(100vh-64px)]">
+        <main className="flex-1 p-8 overflow-y-auto h-[calc(100vh-64px)]">
           <div className="max-w-7xl mx-auto space-y-8">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col md:flex-row md:items-center justify-between gap-4"
             >
-              <div>
-                <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                  Faculty Control Room
-                </h1>
-                <p className="text-slate-500 dark:text-slate-400 font-medium">Manage your classes, sessions and student performance</p>
-              </div>
-              <div className="flex gap-4">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowCreateClass(true)}
-                  className="flex items-center space-x-2 px-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl shadow-sm hover:shadow-md transition-all font-bold"
-                >
-                  <Plus size={20} className="text-indigo-600" />
-                  <span>Create Class</span>
-                </motion.button>
-              </div>
+              <h1 className="text-4xl font-bold text-white mb-2">
+                Faculty Control Room
+              </h1>
+              <p className="text-gray-400">Manage your classes, sessions and student performance</p>
             </motion.div>
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <StatsCard icon={BookOpen} title="Active Classes" value={classes.length} color="blue" delay={0.1} isLive />
-              <StatsCard icon={Calendar} title="Weekly Sessions" value={sessions.length} color="purple" delay={0.2} />
-              <StatsCard icon={Users} title="Total Students" value={classes.reduce((acc, c) => acc + (c.students?.length || 0), 0)} color="green" delay={0.3} />
-              <StatsCard icon={TrendingUp} title="Avg Attendance" value="84%" color="orange" delay={0.4} />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                    <BookOpen className="text-blue-500" size={24} />
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-green-500 font-semibold">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    Live
+                  </div>
+                </div>
+                <p className="text-gray-400 text-sm mb-1">Active Classes</p>
+                <p className="text-4xl font-bold text-white">{classes.length}</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
+              >
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4">
+                  <Calendar className="text-purple-500" size={24} />
+                </div>
+                <p className="text-gray-400 text-sm mb-1">Weekly Sessions</p>
+                <p className="text-4xl font-bold text-white">{sessions.length}</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
+              >
+                <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
+                  <Users className="text-green-500" size={24} />
+                </div>
+                <p className="text-gray-400 text-sm mb-1">Total Students</p>
+                <p className="text-4xl font-bold text-white">{classes.reduce((acc, c) => acc + (c.students?.length || 0), 0)}</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
+              >
+                <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4">
+                  <TrendingUp className="text-orange-500" size={24} />
+                </div>
+                <p className="text-gray-400 text-sm mb-1">Avg Attendance</p>
+                <p className="text-4xl font-bold text-white">84</p>
+              </motion.div>
             </div>
 
             {/* Tabs */}
-            <div className="flex bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl p-1.5 rounded-[24px] border border-slate-200 dark:border-slate-800 w-fit">
-              {['classes', 'sessions', 'reports'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-8 py-3 rounded-[18px] text-sm font-black uppercase tracking-widest transition-all duration-300 ${
-                    activeTab === tab 
-                      ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-500/20' 
-                      : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setActiveTab('classes')}
+                className={`px-8 py-3 rounded-xl text-sm font-bold uppercase transition-all ${
+                  activeTab === 'classes' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Classes
+              </button>
+              <button
+                onClick={() => setActiveTab('sessions')}
+                className={`px-8 py-3 rounded-xl text-sm font-bold uppercase transition-all ${
+                  activeTab === 'sessions' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Sessions
+              </button>
+              <button
+                onClick={() => setActiveTab('reports')}
+                className={`px-8 py-3 rounded-xl text-sm font-bold uppercase transition-all ${
+                  activeTab === 'reports' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Reports
+              </button>
             </div>
 
             <AnimatePresence mode="wait">
@@ -239,7 +294,7 @@ export default function FacultyDashboard() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
                 >
                   {classes.map((cls, i) => (
                     <motion.div
@@ -247,35 +302,31 @@ export default function FacultyDashboard() {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: i * 0.05 }}
+                      className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
                     >
-                      <GlassCard className="p-0 overflow-hidden group border-b-4 border-b-indigo-500">
-                        <div className="p-8">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 flex items-center justify-center">
-                              <BookOpen size={28} />
-                            </div>
-                            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-[10px] font-black text-slate-500 uppercase tracking-widest rounded-lg">
-                              {cls.code}
-                            </span>
-                          </div>
-                          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-indigo-600 transition-colors">
-                            {cls.name}
-                          </h3>
-                          <div className="flex items-center gap-4 text-sm font-bold text-slate-400 mb-8">
-                            <span className="flex items-center gap-1.5"><Users size={16} /> {cls.students?.length || 0} Students</span>
-                            <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                            <span>{cls.department}</span>
-                          </div>
-                          <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => openStartSessionModal(cls)}
-                            className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-slate-900/10 hover:bg-indigo-600 dark:hover:bg-indigo-600 hover:text-white dark:hover:text-white transition-all"
-                          >
-                            Start New Session
-                          </motion.button>
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                          <BookOpen className="text-blue-500" size={24} />
                         </div>
-                      </GlassCard>
+                        <span className="px-3 py-1 bg-gray-800 text-xs font-bold text-gray-400 uppercase rounded-lg">
+                          {cls.code}
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-2">
+                        {cls.name}
+                      </h3>
+                      <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
+                        <Users size={16} />
+                        <span>{cls.students?.length || 0} Students</span>
+                        <span>•</span>
+                        <span>{cls.department}</span>
+                      </div>
+                      <button
+                        onClick={() => openStartSessionModal(cls)}
+                        className="w-full py-3 bg-white text-gray-900 rounded-xl font-bold text-sm uppercase hover:bg-gray-100 transition-all"
+                      >
+                        Start New Session
+                      </button>
                     </motion.div>
                   ))}
                 </motion.div>
