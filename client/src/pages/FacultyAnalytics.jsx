@@ -1,10 +1,41 @@
 import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import Loader from '../components/Loader';
+import axiosInstance from '../utils/axiosInstance';
 import { BarChart3, TrendingUp, Users, Calendar } from 'lucide-react';
 
 export default function FacultyAnalytics() {
+  const [analytics, setAnalytics] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState('30');
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [timeRange]);
+
+  const fetchAnalytics = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axiosInstance.get('/analytics/attendance');
+      setAnalytics(data.data);
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0a0e1a] flex items-center justify-center">
+        <Loader size="lg" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#0a0e1a]">
       <Navbar />
@@ -15,9 +46,21 @@ export default function FacultyAnalytics() {
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
+              className="flex items-center justify-between"
             >
-              <h1 className="text-4xl font-bold text-white mb-2">Analytics</h1>
-              <p className="text-gray-400">Attendance trends and performance insights</p>
+              <div>
+                <h1 className="text-4xl font-bold text-white mb-2">Analytics</h1>
+                <p className="text-gray-400">Attendance trends and performance insights</p>
+              </div>
+              <select 
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                className="px-4 py-2 bg-[#1a1f2e] border border-gray-800 rounded-xl text-white"
+              >
+                <option value="7">Last 7 Days</option>
+                <option value="30">Last 30 Days</option>
+                <option value="90">Last 90 Days</option>
+              </select>
             </motion.div>
 
             {/* Stats Grid */}
@@ -27,7 +70,9 @@ export default function FacultyAnalytics() {
                   <BarChart3 className="text-blue-500" size={24} />
                 </div>
                 <p className="text-gray-400 text-sm mb-1">Overall Attendance</p>
-                <p className="text-4xl font-bold text-white">87%</p>
+                <p className="text-4xl font-bold text-white">
+                  {analytics?.overview?.averageAttendance || 0}%
+                </p>
               </div>
 
               <div className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800">
@@ -35,7 +80,9 @@ export default function FacultyAnalytics() {
                   <TrendingUp className="text-green-500" size={24} />
                 </div>
                 <p className="text-gray-400 text-sm mb-1">Trend</p>
-                <p className="text-4xl font-bold text-green-500">+5%</p>
+                <p className="text-4xl font-bold text-green-500">
+                  +{analytics?.trend || 5}%
+                </p>
               </div>
 
               <div className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800">
@@ -43,7 +90,9 @@ export default function FacultyAnalytics() {
                   <Users className="text-purple-500" size={24} />
                 </div>
                 <p className="text-gray-400 text-sm mb-1">Active Students</p>
-                <p className="text-4xl font-bold text-white">245</p>
+                <p className="text-4xl font-bold text-white">
+                  {analytics?.overview?.totalStudents || 0}
+                </p>
               </div>
 
               <div className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800">
@@ -51,7 +100,9 @@ export default function FacultyAnalytics() {
                   <Calendar className="text-orange-500" size={24} />
                 </div>
                 <p className="text-gray-400 text-sm mb-1">Sessions This Month</p>
-                <p className="text-4xl font-bold text-white">42</p>
+                <p className="text-4xl font-bold text-white">
+                  {analytics?.overview?.totalSessions || 0}
+                </p>
               </div>
             </div>
 

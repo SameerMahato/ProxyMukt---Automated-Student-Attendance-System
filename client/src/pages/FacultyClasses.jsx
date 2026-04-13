@@ -1,13 +1,61 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import { BookOpen, Users, Plus } from 'lucide-react';
+import Loader from '../components/Loader';
+import { classAPI } from '../services/api';
+import { BookOpen, Users, Plus, X } from 'lucide-react';
 
 export default function FacultyClasses() {
-  const classes = [
-    { id: 1, name: 'Database Management Systems', code: 'CS301', students: 45, department: 'Computer Science' },
-    { id: 2, name: 'Data Structures and Algorithms', code: 'CS201', students: 52, department: 'Computer Science' },
-  ];
+  const navigate = useNavigate();
+  const [classes, setClasses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    code: '',
+    description: '',
+    department: '',
+    semester: '',
+  });
+
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
+  const fetchClasses = async () => {
+    try {
+      setLoading(true);
+      const { data } = await classAPI.getClasses();
+      setClasses(data.data.classes);
+    } catch (error) {
+      console.error('Error fetching classes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateClass = async (e) => {
+    e.preventDefault();
+    try {
+      await classAPI.createClass(formData);
+      setShowCreateModal(false);
+      setFormData({ name: '', code: '', description: '', department: '', semester: '' });
+      fetchClasses();
+    } catch (error) {
+      console.error('Error creating class:', error);
+      alert('Failed to create class: ' + (error.response?.data?.message || error.message));
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0a0e1a] flex items-center justify-center">
+        <Loader size="lg" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0e1a]">
@@ -25,42 +73,166 @@ export default function FacultyClasses() {
                 <h1 className="text-4xl font-bold text-white mb-2">Classes</h1>
                 <p className="text-gray-400">Manage your classes and enrollments</p>
               </div>
-              <button className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all">
+              <button 
+                onClick={() => setShowCreateModal(true)}
+                className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all"
+              >
                 <Plus size={20} />
                 Create Class
               </button>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {classes.map((cls, i) => (
-                <motion.div
-                  key={cls.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                      <BookOpen className="text-blue-500" size={24} />
-                    </div>
-                    <span className="px-3 py-1 bg-gray-800 text-xs font-bold text-gray-400 uppercase rounded-lg">
-                      {cls.code}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">{cls.name}</h3>
-                  <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-                    <Users size={16} />
-                    <span>{cls.students} Students</span>
-                    <span>•</span>
-                    <span>{cls.department}</span>
-                  </div>
-                  <button className="w-full py-3 bg-white text-gray-900 rounded-xl font-bold text-sm uppercase hover:bg-gray-100 transition-all">
-                    Manage Class
+              {classes.length === 0 ? (
+                <div className="col-span-2 bg-[#1a1f2e] rounded-2xl p-12 border border-gray-800 text-center">
+                  <BookOpen className="mx-auto text-gray-600 mb-4" size={48} />
+                  <p className="text-gray-400 mb-4">No classes yet</p>
+                  <button 
+                    onClick={() => setShowCreateModal(true)}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all"
+                  >
+                    Create Your First Class
                   </button>
-                </motion.div>
-              ))}
+                </div>
+              ) : (
+                classes.map((cls, i) => (
+                  <motion.div
+                    key={cls._id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800 hover:border-blue-500/30 transition-all cursor-pointer"
+                    onClick={() => navigate(`/session/new?classId=${cls._id}`)}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                        <BookOpen className="text-blue-500" size={24} />
+                      </div>
+                      <span className="px-3 py-1 bg-gray-800 text-xs font-bold text-gray-400 uppercase rounded-lg">
+                        {cls.code}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">{cls.name}</h3>
+                    <p className="text-gray-400 text-sm mb-4">{cls.description || 'No description'}</p>
+                    <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
+                      <Users size={16} />
+                      <span>{cls.students?.length || 0} Students</span>
+                      <span>•</span>
+                      <span>{cls.department}</span>
+                    </div>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/session/new?classId=${cls._id}`);
+                      }}
+                      className="w-full py-3 bg-white text-gray-900 rounded-xl font-bold text-sm uppercase hover:bg-gray-100 transition-all"
+                    >
+                      Start Session
+                    </button>
+                  </motion.div>
+                ))
+              )}
             </div>
+
+            {/* Create Class Modal */}
+            {showCreateModal && (
+              <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="bg-[#1a1f2e] p-8 rounded-2xl max-w-2xl w-full border border-gray-800"
+                >
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-white">Create New Class</h2>
+                    <button 
+                      onClick={() => setShowCreateModal(false)}
+                      className="p-2 hover:bg-gray-800 rounded-xl transition-all"
+                    >
+                      <X className="text-gray-400" size={24} />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleCreateClass} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-400 mb-2">Class Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500"
+                        placeholder="e.g., Database Management Systems"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-400 mb-2">Class Code</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.code}
+                        onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500"
+                        placeholder="e.g., CS301"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-400 mb-2">Description</label>
+                      <textarea
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500"
+                        rows="3"
+                        placeholder="Brief description of the class"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-400 mb-2">Department</label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.department}
+                          onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500"
+                          placeholder="e.g., Computer Science"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-400 mb-2">Semester</label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.semester}
+                          onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
+                          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500"
+                          placeholder="e.g., Fall 2025"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 pt-4">
+                      <button 
+                        type="submit"
+                        className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all"
+                      >
+                        Create Class
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setShowCreateModal(false)}
+                        className="px-8 py-3 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-700 transition-all"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
+              </div>
+            )}
           </div>
         </main>
       </div>
