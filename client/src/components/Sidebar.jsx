@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, Calendar, QrCode, BarChart3, Radar, FileText, AlertTriangle, Users, BookOpen, Clock, Megaphone, Settings, Bell, Target, Trophy } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useState, useEffect } from 'react';
+import { notificationAPI } from '../services/api';
 
 export default function Sidebar() {
   const location = useLocation();
@@ -9,12 +10,27 @@ export default function Sidebar() {
   const [unreadAlerts, setUnreadAlerts] = useState(0);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   
-  // TODO: Fetch unread counts from API
   useEffect(() => {
-    // Placeholder for fetching unread counts
-    setUnreadAlerts(3);
-    setUnreadNotifications(5);
+    fetchUnreadCounts();
+    // Refresh counts every 30 seconds
+    const interval = setInterval(fetchUnreadCounts, 30000);
+    return () => clearInterval(interval);
   }, []);
+
+  const fetchUnreadCounts = async () => {
+    try {
+      const { data } = await notificationAPI.getNotifications();
+      setUnreadNotifications(data.data.unreadCount || 0);
+      // For alerts, we can use a similar count or set it based on notification types
+      const alertCount = data.data.notifications?.filter(n => 
+        !n.read && (n.type === 'alert' || n.type === 'warning' || n.type === 'error')
+      ).length || 0;
+      setUnreadAlerts(alertCount);
+    } catch (error) {
+      console.error('Error fetching unread counts:', error);
+      // Silently fail - don't show error to user for background updates
+    }
+  };
   
   const getMenuItems = () => {
     switch (user?.role) {
