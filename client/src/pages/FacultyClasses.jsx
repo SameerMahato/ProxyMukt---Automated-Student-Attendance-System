@@ -5,12 +5,14 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import Loader from '../components/Loader';
 import { classAPI } from '../services/api';
+import { useAuthStore } from '../store/authStore';
 import { BookOpen, Users, Plus, X } from 'lucide-react';
 
 export default function FacultyClasses() {
   const navigate = useNavigate();
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -38,14 +40,46 @@ export default function FacultyClasses() {
 
   const handleCreateClass = async (e) => {
     e.preventDefault();
+    
+    console.log('=== Creating Class ===');
+    console.log('Form Data:', formData);
+    console.log('User:', useAuthStore.getState().user);
+    console.log('Token:', useAuthStore.getState().token ? 'Present' : 'Missing');
+    
     try {
-      await classAPI.createClass(formData);
+      setCreating(true);
+      console.log('Sending request to API...');
+      const response = await classAPI.createClass(formData);
+      console.log('Class created successfully:', response.data);
+      alert('Class created successfully!');
       setShowCreateModal(false);
       setFormData({ name: '', code: '', description: '', department: '', semester: '' });
       fetchClasses();
     } catch (error) {
-      console.error('Error creating class:', error);
-      alert('Failed to create class: ' + (error.response?.data?.message || error.message));
+      console.error('=== Error Creating Class ===');
+      console.error('Full Error:', error);
+      console.error('Response:', error.response);
+      console.error('Status:', error.response?.status);
+      console.error('Data:', error.response?.data);
+      
+      const errorMessage = error.response?.data?.message || error.message;
+      
+      // Handle specific error cases
+      if (errorMessage.includes('duplicate') || errorMessage.includes('unique') || errorMessage.includes('already exists')) {
+        alert('A class with this code already exists. Please use a different class code.');
+      } else if (errorMessage.includes('required')) {
+        alert('Please fill in all required fields.');
+      } else if (errorMessage.includes('authorized') || errorMessage.includes('permission') || errorMessage.includes('Access denied')) {
+        alert('You do not have permission to create classes. Please contact your administrator.');
+      } else if (errorMessage.includes('token') || errorMessage.includes('Authentication')) {
+        alert('Your session has expired. Please log in again.');
+        // Optionally redirect to login
+        // navigate('/login');
+      } else {
+        alert('Failed to create class: ' + errorMessage);
+      }
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -217,14 +251,16 @@ export default function FacultyClasses() {
                     <div className="flex gap-4 pt-4">
                       <button 
                         type="submit"
-                        className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all"
+                        disabled={creating}
+                        className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        Create Class
+                        {creating ? 'Creating...' : 'Create Class'}
                       </button>
                       <button 
                         type="button"
                         onClick={() => setShowCreateModal(false)}
-                        className="px-8 py-3 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-700 transition-all"
+                        disabled={creating}
+                        className="px-8 py-3 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-700 transition-all disabled:opacity-50"
                       >
                         Cancel
                       </button>

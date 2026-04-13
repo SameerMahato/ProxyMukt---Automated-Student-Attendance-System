@@ -8,9 +8,18 @@ export const createClass = async (req, res) => {
   try {
     const { name, code, description, department, semester, schedule } = req.body;
     
+    // Check if class code already exists
+    const existingClass = await Class.findOne({ code: code.toUpperCase() });
+    if (existingClass) {
+      return res.status(400).json({
+        success: false,
+        message: 'A class with this code already exists. Please use a different class code.',
+      });
+    }
+    
     const newClass = await Class.create({
       name,
-      code,
+      code: code.toUpperCase(),
       description,
       faculty: req.user._id,
       department,
@@ -26,9 +35,28 @@ export const createClass = async (req, res) => {
       data: { class: newClass },
     });
   } catch (error) {
+    console.error('Error creating class:', error);
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: messages.join(', '),
+      });
+    }
+    
+    // Handle duplicate key error
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'A class with this code already exists. Please use a different class code.',
+      });
+    }
+    
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || 'Failed to create class',
     });
   }
 };
