@@ -268,3 +268,104 @@ export const removeStudent = async (req, res) => {
     });
   }
 };
+
+/**
+ * Student self-enrollment (join class by code)
+ */
+export const joinClass = async (req, res) => {
+  try {
+    const { classCode } = req.body;
+    
+    if (!classCode) {
+      return res.status(400).json({
+        success: false,
+        message: 'Class code is required',
+      });
+    }
+    
+    // Find class by code
+    const classData = await Class.findOne({ code: classCode.toUpperCase() });
+    
+    if (!classData) {
+      return res.status(404).json({
+        success: false,
+        message: 'Class not found. Please check the class code.',
+      });
+    }
+    
+    // Check if student is already enrolled
+    if (classData.students.includes(req.user._id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'You are already enrolled in this class',
+      });
+    }
+    
+    // Add student to class
+    classData.students.push(req.user._id);
+    await classData.save();
+    
+    await classData.populate('faculty', 'name email');
+    
+    res.json({
+      success: true,
+      message: 'Successfully joined the class!',
+      data: { class: classData },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+/**
+ * Get all available classes (for students to browse and join)
+ */
+export const getAvailableClasses = async (req, res) => {
+  try {
+    const { search, department } = req.query;
+    let query = { isActive: true };
+    
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { code: { $regex: search, $options: 'i' } },
+      ];
+    }
+    
+    if (department) {
+      query.department = department;
+    }
+    
+    const classes = await Class.find(query)
+      .populate('faculty', 'name email')
+      .select('name code description department semester faculty students')
+      .sort('-createdAt');
+    
+    // For students, add enrollment status
+    if (req.user.role === 'STUDENT') {
+      const classesWithStatus = classes.map(cls => ({
+        ...cls.toObject(),
+        isEnrolled: cls.students.some(s => s.toString() === req.user._id.toString()),
+        studentCount: cls.students.length,
+      }));
+      
+      return res.json({
+        success: true,
+        data: { classes: classesWithStatus },
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { classes },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

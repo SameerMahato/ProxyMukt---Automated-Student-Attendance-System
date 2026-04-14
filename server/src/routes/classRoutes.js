@@ -7,6 +7,8 @@ import {
   deleteClass,
   addStudents,
   removeStudent,
+  joinClass,
+  getAvailableClasses,
 } from '../controllers/classController.js';
 import { authenticate } from '../middleware/auth.js';
 import { authorize } from '../middleware/role.js';
@@ -17,6 +19,8 @@ router.use(authenticate);
 
 router.post('/', authorize('FACULTY', 'ADMIN'), createClass);
 router.get('/', getClasses);
+router.get('/available/all', getAvailableClasses); // Must come before /:id
+router.post('/join', authorize('STUDENT'), joinClass);
 router.get('/:id', getClassById);
 router.put('/:id', authorize('FACULTY', 'ADMIN'), updateClass);
 router.delete('/:id', authorize('ADMIN'), deleteClass);

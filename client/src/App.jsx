@@ -26,6 +26,7 @@ import StudentSessions from './pages/StudentSessions';
 import StudentAnnouncements from './pages/StudentAnnouncements';
 import StudentNotifications from './pages/StudentNotifications';
 import StudentSettings from './pages/StudentSettings';
+import JoinClass from './pages/JoinClass';
 import FacultyLeaveManager from './pages/FacultyLeaveManager';
 import FacultyAnnouncementManager from './pages/FacultyAnnouncementManager';
 import AdminTimetableManager from './pages/AdminTimetableManager';
@@ -261,6 +262,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['STUDENT']}>
               <StudentSettings />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/student/join-class"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <JoinClass />
             </ProtectedRoute>
           }
         />

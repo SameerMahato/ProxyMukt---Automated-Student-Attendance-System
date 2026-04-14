@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Calendar, QrCode, BarChart3, Radar, FileText, AlertTriangle, Users, BookOpen, Clock, Megaphone, Settings, Bell, Target, Trophy } from 'lucide-react';
+import { Home, Calendar, QrCode, BarChart3, Radar, FileText, AlertTriangle, Users, BookOpen, Clock, Megaphone, Settings, Bell, Target, Trophy, UserPlus } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useState, useEffect } from 'react';
 import { notificationAPI } from '../services/api';
@@ -65,6 +65,7 @@ export default function Sidebar() {
       case 'STUDENT':
         return [
           { path: '/student', icon: Home, label: 'Dashboard' },
+          { path: '/student/join-class', icon: UserPlus, label: 'Join Classes' },
           { path: '/scan', icon: QrCode, label: 'Scan QR' },
           { path: '/auto-attendance', icon: Radar, label: 'Auto-Attendance' },
           { path: '/student/attendance', icon: Calendar, label: 'My Attendance' },
