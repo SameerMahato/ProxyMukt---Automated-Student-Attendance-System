@@ -8,6 +8,7 @@ import StudentDashboard from './pages/StudentDashboard';
 import StudentAttendance from './pages/StudentAttendance';
 import AdminDashboard from './pages/AdminDashboard';
 import StartSession from './pages/StartSession';
+import CreateSession from './pages/CreateSession';
 import ScanQR from './pages/ScanQR';
 import AutoAttendance from './pages/AutoAttendance';
 import Analytics from './pages/Analytics';
@@ -107,6 +108,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['STUDENT']}>
               <StudentDashboard />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/session/new"
+          element={
+            <ProtectedRoute allowedRoles={['FACULTY', 'ADMIN']}>
+              <CreateSession />
             </ProtectedRoute>
           }
         />
