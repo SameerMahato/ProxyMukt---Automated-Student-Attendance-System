@@ -118,21 +118,16 @@ export default function Sidebar() {
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
-      <motion.aside
-        initial={false}
-        animate={{
-          x: isMobileMenuOpen ? 0 : '-100%',
-        }}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+      {/* Sidebar - Desktop: Always visible, Mobile: Slide in/out */}
+      <aside
         className={`
           fixed lg:sticky top-0 left-0 h-screen z-40
-          w-64 lg:w-64
+          w-64
           backdrop-blur-xl bg-white/95 dark:bg-gray-800/95 
           border-r border-white/20 dark:border-gray-700/50
           overflow-y-auto
-          lg:translate-x-0
-          ${!isMobileMenuOpen ? '-translate-x-full lg:translate-x-0' : ''}
+          transition-transform duration-300 ease-in-out
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         <nav className="p-4 space-y-2 mt-16 lg:mt-0">
@@ -186,7 +181,7 @@ export default function Sidebar() {
             );
           })}
         </nav>
-      </motion.aside>
+      </aside>
     </>
   );
 }

@@ -48,29 +48,29 @@ export default function AdminDashboard() {
       <Navbar />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
-            <div className="mb-8 flex justify-between items-center">
+            <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
                   Admin Analytics Dashboard
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                   System-wide attendance and security insights
                 </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <select 
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value)}
-                  className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium"
+                  className="w-full sm:w-auto px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium min-h-[44px]"
                 >
                   <option>Last 7 Days</option>
                   <option>Last 30 Days</option>
                   <option>Last 90 Days</option>
                 </select>
-                <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 flex items-center gap-2">
+                <button className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 flex items-center justify-center gap-2 min-h-[44px]">
                   <FileText size={16} />
                   Export
                 </button>
@@ -78,12 +78,12 @@ export default function AdminDashboard() {
             </div>
 
             {/* Tabs */}
-            <div className="mb-6 flex gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 w-fit">
+            <div className="mb-4 sm:mb-6 flex gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 w-full overflow-x-auto scrollbar-hide">
               {['Overview', 'Security', 'Performance', 'Reports'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-4 sm:px-6 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] ${
                     activeTab === tab
                       ? 'bg-indigo-600 text-white'
                       : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -105,11 +105,11 @@ export default function AdminDashboard() {
                   transition={{ duration: 0.3 }}
                 >
                   {/* Stats Cards */}
-                  <div className="grid grid-cols-4 gap-6 mb-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+                      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6"
                     >
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Students</span>
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
-                      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+                      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6"
                     >
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Average Attendance</span>
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
-                      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+                      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6"
                     >
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-sm font-medium text-gray-600 dark:text-gray-400">At Risk Students</span>
@@ -163,7 +163,7 @@ export default function AdminDashboard() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
-                      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+                      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6"
                     >
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Sessions</span>
@@ -179,8 +179,8 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Charts Grid */}
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
                       <div className="flex items-center gap-2 mb-6">
                         <TrendingUp size={18} className="text-indigo-600 dark:text-indigo-400" />
                         <h3 className="font-bold text-gray-900 dark:text-white">
@@ -219,8 +219,8 @@ export default function AdminDashboard() {
                   transition={{ duration: 0.3 }}
                 >
                   {/* Security Stats */}
-                  <div className="grid grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Proxy Attempts</span>
                         <div className="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
@@ -266,9 +266,9 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Security Charts */}
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                      <h3 className="font-bold text-gray-900 dark:text-white mb-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+                      <h3 className="font-bold text-sm sm:text-base text-gray-900 dark:text-white mb-4 sm:mb-6">
                         Fraud Detection Timeline
                       </h3>
                       <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
@@ -303,8 +303,8 @@ export default function AdminDashboard() {
                   transition={{ duration: 0.3 }}
                 >
                   {/* Performance Stats */}
-                  <div className="grid grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-sm font-medium text-gray-600 dark:text-gray-400">API Response Time</span>
                         <div className="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
@@ -350,9 +350,9 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Performance Charts */}
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                      <h3 className="font-bold text-gray-900 dark:text-white mb-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+                      <h3 className="font-bold text-sm sm:text-base text-gray-900 dark:text-white mb-4 sm:mb-6">
                         Response Time Trend
                       </h3>
                       <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
@@ -387,8 +387,8 @@ export default function AdminDashboard() {
                   transition={{ duration: 0.3 }}
                 >
                   {/* Reports Stats */}
-                  <div className="grid grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Generated Reports</span>
                         <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
@@ -434,8 +434,8 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Reports List */}
-                  <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                    <h3 className="font-bold text-gray-900 dark:text-white mb-6">
+                  <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+                    <h3 className="font-bold text-sm sm:text-base text-gray-900 dark:text-white mb-4 sm:mb-6">
                       Recent Reports
                     </h3>
                     <div className="space-y-4">
@@ -445,17 +445,17 @@ export default function AdminDashboard() {
                         { name: 'Performance Metrics', date: '2026-03-25', type: 'CSV', size: '856 KB' },
                         { name: 'Student Analytics', date: '2026-03-20', type: 'XLSX', size: '3.2 MB' },
                       ].map((report, i) => (
-                        <div key={i} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                        <div key={i} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors gap-3">
+                          <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                            <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0">
                               <FileText size={20} className="text-blue-600 dark:text-blue-400" />
                             </div>
-                            <div>
-                              <h4 className="font-semibold text-gray-900 dark:text-white">{report.name}</h4>
-                              <p className="text-sm text-gray-500">{report.date} • {report.type} • {report.size}</p>
+                            <div className="min-w-0 flex-1">
+                              <h4 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white truncate">{report.name}</h4>
+                              <p className="text-xs sm:text-sm text-gray-500">{report.date} • {report.type} • {report.size}</p>
                             </div>
                           </div>
-                          <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
+                          <button className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-indigo-700 min-h-[44px]">
                             Download
                           </button>
                         </div>

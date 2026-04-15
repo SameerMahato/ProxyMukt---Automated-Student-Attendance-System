@@ -130,4 +130,19 @@ const PORT = process.env.PORT || 5000;
 
 httpServer.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+}).on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Error: Port ${PORT} is already in use!`);
+    console.error(`\n💡 Solutions:`);
+    console.error(`   1. Kill the process using port ${PORT}:`);
+    console.error(`      Windows: netstat -ano | findstr :${PORT}`);
+    console.error(`               taskkill /PID <PID> /F`);
+    console.error(`      Linux/Mac: lsof -ti:${PORT} | xargs kill -9`);
+    console.error(`   2. Or change the PORT in your .env file`);
+    console.error(`   3. Or run: npm run kill-port (if script exists)\n`);
+    process.exit(1);
+  } else {
+    console.error('❌ Server error:', err);
+    process.exit(1);
+  }
 });

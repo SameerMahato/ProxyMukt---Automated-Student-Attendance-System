@@ -179,85 +179,85 @@ export default function FacultyDashboard() {
       <Navbar />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 p-8 overflow-y-auto h-[calc(100vh-64px)]">
-          <div className="max-w-7xl mx-auto space-y-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto h-[calc(100vh-64px)]">
+          <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
                 Faculty Control Room
               </h1>
-              <p className="text-gray-400">Manage your classes, sessions and student performance</p>
+              <p className="text-sm sm:text-base text-gray-400">Manage your classes, sessions and student performance</p>
             </motion.div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
+                className="bg-[#1a1f2e] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-800"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                    <BookOpen className="text-blue-500" size={24} />
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                    <BookOpen className="text-blue-500" size={20} />
                   </div>
                   <div className="flex items-center gap-2 text-xs text-green-500 font-semibold">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                     Live
                   </div>
                 </div>
-                <p className="text-gray-400 text-sm mb-1">Active Classes</p>
-                <p className="text-4xl font-bold text-white">{classes.length}</p>
+                <p className="text-gray-400 text-xs sm:text-sm mb-1">Active Classes</p>
+                <p className="text-3xl sm:text-4xl font-bold text-white">{classes.length}</p>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
+                className="bg-[#1a1f2e] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-800"
               >
-                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4">
-                  <Calendar className="text-purple-500" size={24} />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-3 sm:mb-4">
+                  <Calendar className="text-purple-500" size={20} />
                 </div>
-                <p className="text-gray-400 text-sm mb-1">Weekly Sessions</p>
-                <p className="text-4xl font-bold text-white">{sessions.length}</p>
+                <p className="text-gray-400 text-xs sm:text-sm mb-1">Weekly Sessions</p>
+                <p className="text-3xl sm:text-4xl font-bold text-white">{sessions.length}</p>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
+                className="bg-[#1a1f2e] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-800"
               >
-                <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
-                  <Users className="text-green-500" size={24} />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-3 sm:mb-4">
+                  <Users className="text-green-500" size={20} />
                 </div>
-                <p className="text-gray-400 text-sm mb-1">Total Students</p>
-                <p className="text-4xl font-bold text-white">{classes.reduce((acc, c) => acc + (c.students?.length || 0), 0)}</p>
+                <p className="text-gray-400 text-xs sm:text-sm mb-1">Total Students</p>
+                <p className="text-3xl sm:text-4xl font-bold text-white">{classes.reduce((acc, c) => acc + (c.students?.length || 0), 0)}</p>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
+                className="bg-[#1a1f2e] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-800"
               >
-                <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4">
-                  <TrendingUp className="text-orange-500" size={24} />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-3 sm:mb-4">
+                  <TrendingUp className="text-orange-500" size={20} />
                 </div>
-                <p className="text-gray-400 text-sm mb-1">Avg Attendance</p>
-                <p className="text-4xl font-bold text-white">84</p>
+                <p className="text-gray-400 text-xs sm:text-sm mb-1">Avg Attendance</p>
+                <p className="text-3xl sm:text-4xl font-bold text-white">84</p>
               </motion.div>
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide">
               <button
                 onClick={() => setActiveTab('classes')}
-                className={`px-8 py-3 rounded-xl text-sm font-bold uppercase transition-all ${
+                className={`px-6 sm:px-8 py-3 rounded-xl text-xs sm:text-sm font-bold uppercase transition-all whitespace-nowrap ${
                   activeTab === 'classes' 
                     ? 'bg-blue-600 text-white' 
                     : 'text-gray-400 hover:text-white'
@@ -267,7 +267,7 @@ export default function FacultyDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab('sessions')}
-                className={`px-8 py-3 rounded-xl text-sm font-bold uppercase transition-all ${
+                className={`px-6 sm:px-8 py-3 rounded-xl text-xs sm:text-sm font-bold uppercase transition-all whitespace-nowrap ${
                   activeTab === 'sessions' 
                     ? 'bg-blue-600 text-white' 
                     : 'text-gray-400 hover:text-white'
@@ -277,7 +277,7 @@ export default function FacultyDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab('reports')}
-                className={`px-8 py-3 rounded-xl text-sm font-bold uppercase transition-all ${
+                className={`px-6 sm:px-8 py-3 rounded-xl text-xs sm:text-sm font-bold uppercase transition-all whitespace-nowrap ${
                   activeTab === 'reports' 
                     ? 'bg-blue-600 text-white' 
                     : 'text-gray-400 hover:text-white'
@@ -294,7 +294,7 @@ export default function FacultyDashboard() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"
                 >
                   {classes.map((cls, i) => (
                     <motion.div
@@ -302,28 +302,28 @@ export default function FacultyDashboard() {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: i * 0.05 }}
-                      className="bg-[#1a1f2e] rounded-2xl p-6 border border-gray-800"
+                      className="bg-[#1a1f2e] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-800"
                     >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                          <BookOpen className="text-blue-500" size={24} />
+                      <div className="flex items-start justify-between mb-3 sm:mb-4">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                          <BookOpen className="text-blue-500" size={20} />
                         </div>
-                        <span className="px-3 py-1 bg-gray-800 text-xs font-bold text-gray-400 uppercase rounded-lg">
+                        <span className="px-2 sm:px-3 py-1 bg-gray-800 text-xs font-bold text-gray-400 uppercase rounded-lg">
                           {cls.code}
                         </span>
                       </div>
-                      <h3 className="text-xl font-bold text-white mb-2">
+                      <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                         {cls.name}
                       </h3>
-                      <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mb-4 sm:mb-6">
                         <Users size={16} />
                         <span>{cls.students?.length || 0} Students</span>
                         <span>•</span>
-                        <span>{cls.department}</span>
+                        <span className="truncate">{cls.department}</span>
                       </div>
                       <button
                         onClick={() => openStartSessionModal(cls)}
-                        className="w-full py-3 bg-white text-gray-900 rounded-xl font-bold text-sm uppercase hover:bg-gray-100 transition-all"
+                        className="w-full py-3 bg-white text-gray-900 rounded-xl font-bold text-xs sm:text-sm uppercase hover:bg-gray-100 transition-all min-h-[44px]"
                       >
                         Start New Session
                       </button>
@@ -340,8 +340,8 @@ export default function FacultyDashboard() {
                   exit={{ opacity: 0, y: -20 }}
                   className="space-y-4"
                 >
-                  <GlassCard className="p-0 overflow-hidden">
-                    <table className="w-full">
+                  <GlassCard className="p-0 overflow-hidden overflow-x-auto">
+                    <table className="w-full min-w-[640px]">
                       <thead>
                         <tr className="bg-slate-50 dark:bg-slate-800/50">
                           <th className="px-8 py-6 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Class</th>
@@ -414,49 +414,49 @@ export default function FacultyDashboard() {
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
-                    className="bg-white dark:bg-slate-900 p-8 rounded-[40px] max-w-2xl w-full shadow-2xl overflow-y-auto max-h-[90vh]"
+                    className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl sm:rounded-[40px] max-w-2xl w-full shadow-2xl overflow-y-auto max-h-[90vh]"
                   >
-                    <div className="flex justify-between items-start mb-8">
+                    <div className="flex justify-between items-start mb-6 sm:mb-8">
                       <div>
-                        <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Launch Session</h2>
-                        <p className="text-slate-500 font-bold mt-1">Class: {selectedClass?.name}</p>
+                        <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Launch Session</h2>
+                        <p className="text-sm sm:text-base text-slate-500 font-bold mt-1">Class: {selectedClass?.name}</p>
                       </div>
                       <button onClick={() => setShowStartSession(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all">
                         <Activity className="rotate-45 text-slate-400" />
                       </button>
                     </div>
 
-                    <form onSubmit={handleStartSession} className="space-y-8">
+                    <form onSubmit={handleStartSession} className="space-y-6 sm:space-y-8">
                       <div className="space-y-4">
-                        <label className="text-sm font-black uppercase tracking-widest text-slate-400 ml-1">Session Protocol</label>
-                        <div className="grid grid-cols-2 gap-4">
+                        <label className="text-xs sm:text-sm font-black uppercase tracking-widest text-slate-400 ml-1">Session Protocol</label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                           <button
                             type="button"
                             onClick={() => setSessionData({ ...sessionData, sessionType: 'offline' })}
-                            className={`p-6 rounded-3xl border-2 transition-all flex flex-col items-center gap-4 ${
+                            className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all flex flex-col items-center gap-3 sm:gap-4 min-h-[44px] ${
                               sessionData.sessionType === 'offline'
                                 ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-900/10 shadow-lg shadow-indigo-500/10'
                                 : 'border-slate-100 dark:border-slate-800'
                             }`}
                           >
-                            <MapPin size={32} className={sessionData.sessionType === 'offline' ? 'text-indigo-600' : 'text-slate-400'} />
+                            <MapPin size={28} className={sessionData.sessionType === 'offline' ? 'text-indigo-600' : 'text-slate-400'} />
                             <div className="text-center">
-                              <p className="font-bold text-slate-900 dark:text-white">Physical Class</p>
+                              <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">Physical Class</p>
                               <p className="text-[10px] font-bold text-slate-400 uppercase">QR + Location</p>
                             </div>
                           </button>
                           <button
                             type="button"
                             onClick={() => setSessionData({ ...sessionData, sessionType: 'online' })}
-                            className={`p-6 rounded-3xl border-2 transition-all flex flex-col items-center gap-4 ${
+                            className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all flex flex-col items-center gap-3 sm:gap-4 min-h-[44px] ${
                               sessionData.sessionType === 'online'
                                 ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-900/10 shadow-lg shadow-indigo-500/10'
                                 : 'border-slate-100 dark:border-slate-800'
                             }`}
                           >
-                            <Video size={32} className={sessionData.sessionType === 'online' ? 'text-indigo-600' : 'text-slate-400'} />
+                            <Video size={28} className={sessionData.sessionType === 'online' ? 'text-indigo-600' : 'text-slate-400'} />
                             <div className="text-center">
-                              <p className="font-bold text-slate-900 dark:text-white">Virtual Class</p>
+                              <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">Virtual Class</p>
                               <p className="text-[10px] font-bold text-slate-400 uppercase">External Meet</p>
                             </div>
                           </button>
@@ -464,11 +464,11 @@ export default function FacultyDashboard() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-black uppercase tracking-widest text-slate-400 ml-1">Session Designation</label>
+                        <label className="text-xs sm:text-sm font-black uppercase tracking-widest text-slate-400 ml-1">Session Designation</label>
                         <input
                           type="text"
                           required
-                          className="w-full p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-4 focus:ring-indigo-500/10 font-bold transition-all"
+                          className="w-full p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-4 focus:ring-indigo-500/10 font-bold transition-all text-base"
                           value={sessionData.title}
                           onChange={(e) => setSessionData({ ...sessionData, title: e.target.value })}
                         />
@@ -476,7 +476,7 @@ export default function FacultyDashboard() {
 
                       {sessionData.sessionType === 'offline' && (
                         <div className="space-y-4">
-                           <label className="text-sm font-black uppercase tracking-widest text-slate-400 ml-1">Geofence Location</label>
+                           <label className="text-xs sm:text-sm font-black uppercase tracking-widest text-slate-400 ml-1">Geofence Location</label>
                            <LocationPicker
                             value={sessionData.location}
                             onChange={(location) => setSessionData({ ...sessionData, location })}
@@ -484,11 +484,11 @@ export default function FacultyDashboard() {
                         </div>
                       )}
 
-                      <div className="flex gap-4 pt-4">
-                        <button type="submit" className="flex-1 py-5 bg-indigo-600 text-white rounded-3xl font-black uppercase tracking-widest shadow-2xl shadow-indigo-500/40 hover:scale-[1.02] transition-all">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
+                        <button type="submit" className="flex-1 py-4 sm:py-5 bg-indigo-600 text-white rounded-2xl sm:rounded-3xl font-black text-xs sm:text-sm uppercase tracking-widest shadow-2xl shadow-indigo-500/40 hover:scale-[1.02] transition-all min-h-[44px]">
                           Initiate Session
                         </button>
-                        <button type="button" onClick={() => setShowStartSession(false)} className="px-8 py-5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-3xl font-black uppercase tracking-widest">
+                        <button type="button" onClick={() => setShowStartSession(false)} className="px-6 sm:px-8 py-4 sm:py-5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-2xl sm:rounded-3xl font-black text-xs sm:text-sm uppercase tracking-widest min-h-[44px]">
                           Cancel
                         </button>
                       </div>
