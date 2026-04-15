@@ -2,10 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== RESPONSIVE UTILITIES ===== */
+@layer utilities {
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Responsive text sizes */
+  .text-responsive-xs { font-size: clamp(0.75rem, 2vw, 0.875rem); }
+  .text-responsive-sm { font-size: clamp(0.875rem, 2.5vw, 1rem); }
+  .text-responsive-base { font-size: clamp(1rem, 3vw, 1.125rem); }
+  .text-responsive-lg { font-size: clamp(1.125rem, 3.5vw, 1.25rem); }
+  .text-responsive-xl { font-size: clamp(1.25rem, 4vw, 1.5rem); }
+  .text-responsive-2xl { font-size: clamp(1.5rem, 5vw, 2rem); }
+  .text-responsive-3xl { font-size: clamp(1.875rem, 6vw, 2.5rem); }
+  .text-responsive-4xl { font-size: clamp(2.25rem, 7vw, 3rem); }
+  
+  /* Responsive spacing */
+  .space-responsive { padding: clamp(1rem, 3vw, 2rem); }
+  .gap-responsive { gap: clamp(0.5rem, 2vw, 1.5rem); }
+  
+  /* Touch-friendly buttons */
+  .btn-touch {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1.5rem;
+  }
+  
+  /* Prevent text selection on buttons */
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Safe area for notched devices */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -23,6 +78,16 @@
 /* Smooth Scrolling */
 html {
   scroll-behavior: smooth;
+  /* Prevent horizontal scroll */
+  overflow-x: hidden;
+}
+
+body {
+  /* Prevent horizontal scroll */
+  overflow-x: hidden;
+  /* Improve text rendering on mobile */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Gradient Text Animation */
@@ -225,12 +290,19 @@ html {
     /* Professional gradient - subtle and safe */
     background: linear-gradient(135deg, #F8FAFC 0%, #E0E7FF 100%);
     background-attachment: fixed;
+    /* Prevent zoom on input focus (iOS) */
+    touch-action: manipulation;
   }
   
   .dark body {
     /* Professional dark gradient - minimal and safe */
     background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
     background-attachment: fixed;
+  }
+  
+  /* Prevent zoom on input focus (iOS) */
+  input, select, textarea {
+    font-size: 16px !important;
   }
 }
 
@@ -284,5 +356,37 @@ html {
   .dark .glass {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ===== MOBILE RESPONSIVE FIXES ===== */
+@media (max-width: 768px) {
+  /* Reduce animations on mobile for performance */
+  * {
+    animation-duration: 0.5s !important;
+  }
+  
+  /* Optimize touch targets */
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+  
+  /* Prevent text size adjustment */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+/* Tablet specific */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    max-width: 95%;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .container {
+    max-width: 1280px;
   }
 }
