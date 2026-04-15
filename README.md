@@ -97,15 +97,15 @@
 <table>
 <tr>
 <td width="33%">
-<img src="images/Screenshot 2026-04-15 211603.png" alt="Dashboard 1" />
+<img src="images/admin-dashboard.png" alt="Admin Analytics Dashboard" />
 <p align="center"><b>Admin Analytics Dashboard</b><br/>System-wide insights with 4 unique tabs</p>
 </td>
 <td width="33%">
-<img src="images/Screenshot 2026-04-15 211634.png" alt="Dashboard 2" />
+<img src="images/faculty-dashboard.png" alt="Faculty Control Room" />
 <p align="center"><b>Faculty Control Room</b><br/>Real-time session monitoring</p>
 </td>
 <td width="33%">
-<img src="images/Screenshot 2026-04-15 211702.png" alt="Dashboard 3" />
+<img src="images/student-dashboard.png" alt="Student Dashboard" />
 <p align="center"><b>Student Dashboard</b><br/>Attendance tracking & performance</p>
 </td>
 </tr>
